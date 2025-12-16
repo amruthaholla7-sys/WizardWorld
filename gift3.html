@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Welcome to Wizard World</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root{--accent:#c7d7ff}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:"Cinzel",serif;color:#fff;overflow:hidden;background:#000}
+.hero{position:relative;width:100%;height:100vh;display:grid;place-items:center;overflow:hidden}
+
+/* VIDEO */
+.bg-video{
+  position:absolute;top:50%;left:50%;
+  width:100vw;height:100vh;object-fit:cover;
+  transform:translate(-50%,-50%);
+  filter:brightness(.75);transition:opacity 1s ease
+}
+.bg-layer{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:100vw;
+  height:100vh;
+  object-fit:cover;
+  transform:translate(-50%,-50%);
+  opacity:0;
+  z-index:0;
+  transition:opacity 1.2s ease;
+}
+.bg-layer.show{
+  opacity:1;
+}
+
+
+/* SECOND PAGE IMAGE */
+.bg-image{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  opacity:0;transition:opacity 1.3s ease;
+  filter:none;   
+  image-rendering: auto;
+  filter: contrast(1.08) saturate(1.05);
+}
+
+
+.show{opacity:1}
+.overlay{
+  background: linear-gradient(
+    rgba(0,0,0,0.25),
+    rgba(0,0,0,0.35)
+  );
+}
+
+
+.content{text-align:center;z-index:4}
+h1{font-size:clamp(2rem,5vw,4rem);color:var(--accent)}
+.enter-btn{
+  margin-top:10rem;padding:.6rem 1.2rem;
+  border-radius:12px;border:1px solid rgba(255,255,255,.18);
+  background:rgba(136,56,7,.53);color:var(--accent);
+  cursor:pointer
+}
+.music{margin-bottom:2rem;font-size:1.1rem}
+
+/* HOME + NEXT LETTER */
+.home-btn,.next-letter-btn{
+  position:absolute;bottom:20px;padding:.6rem 1rem;
+  border-radius:10px;border:1px solid rgba(255,255,255,.28);
+  background:rgba(120,0,0,.7);
+  color:#fff;cursor:pointer;display:none;z-index:5
+}
+.home-btn{left:20px}
+.next-letter-btn{right:20px}
+
+/* SPARK */
+.wand-spark{
+  position:fixed;width:14px;height:14px;
+  background:radial-gradient(circle,#fff 10%,#ffe9a8 40%,#ffbf00 70%,transparent);
+  border-radius:50%;pointer-events:none;
+  animation:fadeSpark .9s forwards;
+  box-shadow:0 0 30px gold
+}
+@keyframes fadeSpark{to{opacity:0;transform:scale(.3)}}
+
+/* PARTICLES */
+.particles{position:absolute;inset:0;pointer-events:none}
+.particle{
+  position:absolute;width:4px;height:4px;
+  background:#fff;border-radius:50%;opacity:.6;
+  animation:float 10s infinite
+}
+@keyframes float{50%{transform:translateY(-200px) scale(1.4)}}
+
+/* ENVELOPES */
+.hogwarts-envelope{
+  position:absolute;top:-220px;left:50%;
+  transform:translateX(-50%);
+  width:260px;height:160px;
+  background:#f3e6c8;border:2px solid #c9b27c;
+  display:none;cursor:pointer;z-index:6;
+  animation:flyIn 2.6s ease forwards, sway 4s ease-in-out infinite;
+  box-shadow:0 0 35px rgba(255,200,100,.6)
+}
+/* Envelope-specific entry paths */
+#env1 {
+  animation: flyIn 2.6s ease forwards, sway 4s ease-in-out infinite;
+}
+
+#env2 {
+  animation: flyInLeft 2.6s ease forwards, sway 4s ease-in-out infinite;
+}
+
+#env3 {
+  animation: flyInRight 2.6s ease forwards, sway 4s ease-in-out infinite;
+}
+
+@keyframes flyIn{to{top:50%}}
+@keyframes flyInLeft {
+  0% {
+    top: -220px;
+    left: -260px;
+    opacity: 0;
+  }
+  100% {
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes flyInRight {
+  0% {
+    top: -220px;
+    left: 120%;
+    opacity: 0;
+  }
+  100% {
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes sway{50%{transform:translateX(-50%) rotate(2deg)}}
+
+.hogwarts-envelope::before{
+  content:"";position:absolute;inset:0;
+  background:#ead9ad;
+  clip-path:polygon(0 0,50% 55%,100% 0);
+  transition:transform .9s ease;transform-origin:top
+}
+.hogwarts-envelope.open::before{transform:rotateX(180deg)}
+
+.seal{
+  position:absolute;width:70px;height:70px;
+  left:50%;top:60%;
+  transform:translate(-50%,-50%) rotate(-12deg);
+  border-radius:46% 54% 43% 57%;
+  display:grid;place-items:center;
+  font-size:32px;font-weight:700
+}
+.seal.red{background:#7a0000;color:gold}
+.seal.blue{background:#7a0000;color:gold}
+.seal.green{background:#7a0000;color:gold}
+
+.letter{
+  position:absolute;left:12px;right:12px;bottom:10px;
+  height:0;overflow-y:auto;
+  background:linear-gradient(rgba(255,255,255,.95),rgba(255,255,255,.95));
+  color:#180b01;padding:0 18px;
+  transition:height 1.2s ease
+}
+.hogwarts-envelope.open .letter{height:300px}
+.letter p{font-size:15px;line-height:1.6}
+</style>
+</head>
+
+<body>
+<main class="hero">
+
+<video id="bgVideo" class="bg-video" autoplay muted loop playsinline>
+  <source src="video1(copy).mp4" type="video/mp4">
+</video>
+
+<div id="bg1" class="bg-image" style="background-image:url('image16.jpg')"></div>
+<div class="overlay"></div>
+<div class="particles" id="particles"></div>
+<video id="bg2" class="bg-video bg-layer" muted loop playsinline preload="auto">
+  <source src="video3.mp4" type="video/mp4">
+</video>
+
+<video id="bg3" class="bg-video bg-layer" muted loop playsinline preload="auto">
+  <source src="video7.mp4" type="video/mp4">
+</video>
+
+
+
+<div class="content" id="mainContent">
+  <h1>Welcome to Wizard World</h1>
+  <p class="music"><strong>Step softly… magic listens.<br>
+    Click anywhere to awaken the enchantment.</strong></p>
+  <a class="enter-btn" id="enterCastle">Enter the Castle</a>
+</div>
+
+<button class="home-btn" id="backHome">← Back to Home</button>
+<button class="next-letter-btn" id="nextLetter">Next Letter →</button>
+
+<!-- Envelope 1 -->
+<div id="env1" class="hogwarts-envelope">
+  <div class="seal red">H</div>
+  <div class="letter"><p id="text1"></p></div>
+</div>
+
+<!-- Envelope 2 -->
+<div id="env2" class="hogwarts-envelope">
+  <div class="seal blue">H</div>
+  <div class="letter"><p id="text2"></p></div>
+</div>
+
+<!-- Envelope 3 -->
+<div id="env3" class="hogwarts-envelope">
+  <div class="seal green">H</div>
+  <div class="letter"><p id="text3"></p></div>
+</div>
+
+</main>
+
+<script>
+const envs = [env1, env2, env3];
+const texts = [text1, text2, text3];
+const backgrounds = [bg1, bg2, bg3];
+
+const messages=[
+  "Maaaaammm!!! En kodbeku gottaglilla. Wanted to thank you differently for everything till today. COSMOBIT article inda gottaytu nimge Harry Potter ista anta so one small try to make you smile. Illu maatadtidini anta baikobedi....",
+  "Whole 2k22 batch ge gottu (and even Chatgpt knows now) CSE dept alli nan favourite yaru anta. From SCR to GT, TOC, GenAI and finally to Infosys, not a jouenry for me to easily forget. No more blah blah.... One last click!!!" ,
+  "Your support have been my wand and my shield. Your encouragement is the Reparo on my confidence, Protego on my fears, and Lumos on every dark path I walk. Remember me the way Hogwarts remembers its magic — whispered by stone, sealed by time, and protected by spells, stronger than distance. Thank you for being the Patronus to all my CSE Dementors "
+];
+
+let current=0;
+
+function typeText(el,msg){
+  let i=0;el.innerHTML="";
+  (function t(){
+    if(i<msg.length){el.innerHTML+=msg[i++];setTimeout(t,35)}
+  })();
+}
+
+envs.forEach((env,i)=>{
+  env.onclick=()=>{
+    if(!env.classList.contains("open")){
+      env.classList.add("open");
+      typeText(texts[i],messages[i]);
+    }else{
+      env.classList.remove("open");
+      texts[i].innerHTML="";
+    }
+  };
+});
+
+enterCastle.onclick=()=>{
+  bgVideo.style.opacity=0;
+  bgVideo.pause();
+  bg1.classList.add("show");
+  mainContent.style.display="none";
+  backHome.style.display="block";
+  setTimeout(()=>{
+    envs[0].style.display="block";
+    nextLetter.style.display="block";
+  },2000);
+};
+
+nextLetter.onclick = () => {
+  // hide current envelope
+  envs[current].style.display = "none";
+
+  // hide current background
+  // hide current background
+backgrounds[current].classList.remove("show");
+if (backgrounds[current].tagName === "VIDEO") {
+  backgrounds[current].pause();
+  backgrounds[current].currentTime = 0;
+}
+
+
+  current++;
+
+  if (current < envs.length) {
+
+    // show next background
+backgrounds[current].classList.add("show");
+
+if (backgrounds[current].tagName === "VIDEO") {
+  backgrounds[current].play().catch(()=>{});
+}
+
+    // 🔁 RESET animation so entry direction replays
+    envs[current].style.animation = "none";
+    envs[current].offsetHeight; // force browser reflow
+    envs[current].style.animation = "";
+
+    // show next envelope
+    envs[current].style.display = "block";
+
+    // hide button on last letter
+    if (current === envs.length - 1) {
+      nextLetter.style.display = "none";
+    }
+  }
+};
+;
+
+
+backHome.onclick = () => {
+  envs.forEach(e => {
+    e.style.display = "none";
+    e.classList.remove("open");
+  });
+
+  backgrounds.forEach(bg => bg.classList.remove("show"));
+
+  bgVideo.style.opacity = 1;
+  bgVideo.play();
+
+  mainContent.style.display = "block";
+  backHome.style.display = "none";
+  nextLetter.style.display = "none";
+  current = 0;
+};
+
+
+const bgMusic=new Audio("hp-theme.mp3");
+bgMusic.loop=true;bgMusic.volume=.85;
+document.body.addEventListener("click",()=>bgMusic.play(),{once:true});
+
+
+for(let i=0;i<60;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  p.style.left=Math.random()*100+"%";
+  p.style.top=Math.random()*100+"%";
+  particles.appendChild(p);
+}
+
+document.addEventListener("mousemove",e=>{
+  const s=document.createElement("div");
+  s.className="wand-spark";
+  s.style.left=e.clientX+"px";
+  s.style.top=e.clientY+"px";
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),600);
+});
+</script>
+
+</body>
+</html>
