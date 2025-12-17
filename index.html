@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 🔒 LOCK DESKTOP VIEW ON MOBILE -->
+<meta name="viewport" content="width=1200, initial-scale=0.35, maximum-scale=1.0, user-scalable=yes">
+
 <title>Welcome to Wizard World</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
@@ -10,73 +13,114 @@
 <style>
 :root{--accent:#c7d7ff}
 *{margin:0;padding:0;box-sizing:border-box}
-html, body{
-  width: 100%;
-  min-width: 1200px;
-  overflow-x: auto;
+
+/* 🔒 FIXED DESKTOP CANVAS */
+html,body{
+  width:1200px;
+  height:100%;
+  margin:0 auto;
+  background:#000;
+  overflow:hidden;
 }
 
-body{font-family:"Cinzel",serif;color:#fff;overflow:hidden;background:#000; min-width: 1200px}
-.hero{position:relative;width:100%;height:100vh;display:grid;place-items:center;overflow:hidden}
+body{
+  font-family:"Cinzel",serif;
+  color:#fff;
+}
+
+/* CENTER DESKTOP CANVAS */
+.wrapper{
+  width:1200px;
+  height:100vh;
+  margin:0 auto;
+  position:relative;
+}
+
+.hero{
+  position:relative;
+  width:100%;
+  height:100vh;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
 
 /* VIDEO */
 .bg-video{
-  position:absolute;top:50%;left:50%;
-  width:100vw;height:100vh;object-fit:cover;
-  transform:translate(-50%,-50%);
-  filter:brightness(.75);transition:opacity 1s ease
-}
-.bg-layer{
   position:absolute;
-  top:50%;
-  left:50%;
-  width:100vw;
+  top:50%;left:50%;
+  width:1200px;
   height:100vh;
   object-fit:cover;
+  transform:translate(-50%,-50%);
+  filter:brightness(.75);
+  transition:opacity 1s ease;
+}
+
+.bg-layer{
+  position:absolute;
+  top:50%;left:50%;
+  width:1200px;
+  height:100vh;
   transform:translate(-50%,-50%);
   opacity:0;
   z-index:0;
   transition:opacity 1.2s ease;
 }
-.bg-layer.show{
-  opacity:1;
-}
 
+.bg-layer.show{opacity:1}
 
-/* SECOND PAGE IMAGE */
+/* IMAGE PAGE */
 .bg-image{
-  position:absolute;inset:0;
-  background-size:cover;background-position:center;
-  opacity:0;transition:opacity 1.3s ease;
-  filter:none;   
-  image-rendering: auto;
-  filter: contrast(1.08) saturate(1.05);
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  opacity:0;
+  transition:opacity 1.3s ease;
+  filter:contrast(1.08) saturate(1.05);
 }
-
 
 .show{opacity:1}
+
 .overlay{
-  background: linear-gradient(
-    rgba(0,0,0,0.25),
-    rgba(0,0,0,0.35)
+  background:linear-gradient(
+    rgba(0,0,0,.25),
+    rgba(0,0,0,.35)
   );
+  position:absolute;
+  inset:0;
 }
 
+.content{
+  text-align:center;
+  z-index:4;
+}
 
-.content{text-align:center;z-index:4}
-h1{font-size:clamp(2rem,5vw,4rem);color:var(--accent)}
+h1{
+  font-size:4rem;
+  color:var(--accent);
+}
+
 .enter-btn{
-  margin-top:10rem;padding:.6rem 1.2rem;
-  border-radius:12px;border:1px solid rgba(255,255,255,.18);
-  background:rgba(136,56,7,.53);color:var(--accent);
-  cursor:pointer
+  margin-top:10rem;
+  padding:.6rem 1.2rem;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(136,56,7,.53);
+  color:var(--accent);
+  cursor:pointer;
 }
-.music{margin-bottom:2rem;font-size:1.1rem}
 
-/* HOME + NEXT LETTER */
+.music{
+  margin-bottom:2rem;
+  font-size:1.1rem;
+}
+
+/* FIXED BUTTONS */
 .home-btn,.next-letter-btn{
   position:fixed;
-  bottom:env(safe-area-inset-bottom, 20px);
+  bottom:20px;
   padding:.7rem 1.2rem;
   border-radius:12px;
   border:1px solid rgba(255,255,255,.35);
@@ -88,121 +132,111 @@ h1{font-size:clamp(2rem,5vw,4rem);color:var(--accent)}
   font-size:1rem;
 }
 
-.home-btn{
-  left:20px;
-}
-
-.next-letter-btn{
-  right:20px;
-}
-
+.home-btn{left:20px}
+.next-letter-btn{right:20px}
 
 /* SPARK */
 .wand-spark{
-  position:fixed;width:14px;height:14px;
+  position:fixed;
+  width:14px;height:14px;
   background:radial-gradient(circle,#fff 10%,#ffe9a8 40%,#ffbf00 70%,transparent);
-  border-radius:50%;pointer-events:none;
+  border-radius:50%;
+  pointer-events:none;
   animation:fadeSpark .9s forwards;
-  box-shadow:0 0 30px gold
+  box-shadow:0 0 30px gold;
 }
-@keyframes fadeSpark{to{opacity:0;transform:scale(.3)}}
+
+@keyframes fadeSpark{
+  to{opacity:0;transform:scale(.3)}
+}
 
 /* PARTICLES */
-.particles{position:absolute;inset:0;pointer-events:none}
-.particle{
-  position:absolute;width:4px;height:4px;
-  background:#fff;border-radius:50%;opacity:.6;
-  animation:float 10s infinite
+.particles{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
 }
-@keyframes float{50%{transform:translateY(-200px) scale(1.4)}}
+
+.particle{
+  position:absolute;
+  width:4px;height:4px;
+  background:#fff;
+  border-radius:50%;
+  opacity:.6;
+  animation:float 10s infinite;
+}
+
+@keyframes float{
+  50%{transform:translateY(-200px) scale(1.4)}
+}
 
 /* ENVELOPES */
 .hogwarts-envelope{
-  position:absolute;top:-220px;left:50%;
+  position:absolute;
+  top:-220px;
+  left:50%;
   transform:translateX(-50%);
-  width:260px;height:160px;
-  background:#f3e6c8;border:2px solid #c9b27c;
-  display:none;cursor:pointer;z-index:6;
-  animation:flyIn 1s ease forwards, sway 4s ease-in-out infinite;
-  box-shadow:0 0 35px rgba(255,200,100,.6)
-}
-/* Envelope-specific entry paths */
-#env1 {
-  animation: flyIn 2.6s ease forwards, sway 4s ease-in-out infinite;
-}
-
-#env2 {
-  animation: flyInLeft 2.6s ease forwards, sway 4s ease-in-out infinite;
-}
-
-#env3 {
-  animation: flyInRight 2.6s ease forwards, sway 4s ease-in-out infinite;
+  width:260px;
+  height:160px;
+  background:#f3e6c8;
+  border:2px solid #c9b27c;
+  display:none;
+  cursor:pointer;
+  z-index:6;
+  animation:flyIn 2.6s ease forwards, sway 4s ease-in-out infinite;
+  box-shadow:0 0 35px rgba(255,200,100,.6);
 }
 
 @keyframes flyIn{to{top:50%}}
-@keyframes flyInLeft {
-  0% {
-    top: -220px;
-    left: -260px;
-    opacity: 0;
-  }
-  100% {
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 1;
-  }
-}
-
-@keyframes flyInRight {
-  0% {
-    top: -220px;
-    left: 120%;
-    opacity: 0;
-  }
-  100% {
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 1;
-  }
-}
-
 @keyframes sway{50%{transform:translateX(-50%) rotate(2deg)}}
 
 .hogwarts-envelope::before{
-  content:"";position:absolute;inset:0;
+  content:"";
+  position:absolute;
+  inset:0;
   background:#ead9ad;
   clip-path:polygon(0 0,50% 55%,100% 0);
-  transition:transform .9s ease;transform-origin:top
+  transition:transform .9s ease;
+  transform-origin:top;
 }
+
 .hogwarts-envelope.open::before{transform:rotateX(180deg)}
 
 .seal{
-  position:absolute;width:70px;height:70px;
+  position:absolute;
+  width:70px;height:70px;
   left:50%;top:60%;
   transform:translate(-50%,-50%) rotate(-12deg);
   border-radius:48% 54% 43% 57%;
-  display:grid;place-items:center;
-  font-size:32px;font-weight:700
+  display:grid;
+  place-items:center;
+  font-size:32px;
+  font-weight:700;
+  background:#7a0000;
+  color:gold;
 }
-.seal.red{background:#7a0000;color:gold}
-.seal.blue{background:#7a0000;color:gold}
-.seal.green{background:#7a0000;color:gold}
 
 .letter{
-  position:absolute;left:12px;right:12px;bottom:10px;
-  height:0;overflow-y:auto;
-  background:linear-gradient(rgba(255,255,255,.95),rgba(255,255,255,.95));
-  color:#180b01;padding:0 18px;
-  transition:height 1.2s ease
+  position:absolute;
+  left:12px;
+  right:12px;
+  bottom:10px;
+  height:0;
+  overflow-y:auto;
+  background:#fff;
+  color:#180b01;
+  padding:0 18px;
+  transition:height 1.2s ease;
 }
+
 .hogwarts-envelope.open .letter{height:300px}
 .letter p{font-size:15px;line-height:1.6}
 </style>
 </head>
 
 <body>
+<div class="wrapper">
+
 <main class="hero">
 
 <video id="bgVideo" class="bg-video" autoplay muted loop playsinline>
@@ -380,6 +414,8 @@ document.addEventListener("mousemove",e=>{
 
 </script>
 
+
+
+</div>
 </body>
 </html>
-
