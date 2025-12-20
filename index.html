@@ -179,8 +179,8 @@ h1{
 }
 .music{margin-bottom:2rem;font-size:1.1rem}
 
-/* HOME + NEXT LETTER */
-.home-btn,.next-letter-btn{
+/* NEXT LETTER */
+.next-letter-btn{
   position:fixed;
   bottom:env(safe-area-inset-bottom, 20px);
   padding:.7rem 1.2rem;
@@ -224,7 +224,8 @@ h1{
 
 /* ENVELOPES */
 .hogwarts-envelope{
-  position:absolute;top:-220px;left:50%;
+  position:absolute;
+    top:-220px;left:50%;
   transform:translateX(-50%);
   width:260px;height:160px;
   background:#f3e6c8;border:2px solid #c9b27c;
@@ -308,7 +309,110 @@ h1{
   font-style: italic;
   font-weight: 600;
   color: #3a2414;
-  letter-spacing: 0.02em;}
+  letter-spacing: 0.02em;
+}
+
+  /* ===== SMALL ALWAYS BUTTON ===== */
+#alwaysBtn{
+  position:fixed;
+  bottom:80px;
+  right:22px;
+  padding:6px 10px;
+  font-size:0.9rem;
+  border-radius:50%;
+  border:1px solid rgba(255,215,0,.6);
+  background:rgba(0,0,0,.6);
+  color:gold;
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  z-index:9999;
+  box-shadow:0 0 12px gold;
+  transition:opacity 1.2s ease, transform 1.2s ease;
+}
+
+#alwaysBtn.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:scale(1.1);
+}
+/* ===== FULL SCREEN ALWAYS OVERLAY ===== */
+#alwaysOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.92);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 2s ease;
+  z-index:99999;
+}
+
+#alwaysOverlay.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+#alwaysText{
+  font-size:clamp(3.5rem, 10vw, 7rem);
+  letter-spacing:0.4em;
+  color:#fff6c9;
+  text-shadow:
+    0 0 20px #ffd700,
+    0 0 50px #ffd700,
+    0 0 100px rgba(255,215,0,.9),
+    0 0 160px rgba(255,215,0,.8);
+  animation:alwaysGlow 4s ease-in-out infinite;
+  
+}
+/* ===== MOUSE-RESPONSIVE GLOW ===== */
+#alwaysText{
+  --gx: 0px;
+  --gy: 0px;
+  text-shadow:
+    calc(var(--gx) * 0.2) calc(var(--gy) * 0.2) 20px #fff,
+    calc(var(--gx) * 0.4) calc(var(--gy) * 0.4) 60px gold,
+    calc(var(--gx) * 0.6) calc(var(--gy) * 0.6) 120px rgba(255,215,0,.9),
+    calc(var(--gx) * 0.8) calc(var(--gy) * 0.8) 180px rgba(255,215,0,.8);
+}
+
+@keyframes alwaysGlow{
+  50%{
+    text-shadow:
+      0 0 30px #fff,
+      0 0 80px gold,
+      0 0 140px rgba(255,215,0,1),
+      0 0 200px rgba(255,215,0,.9);
+  }
+}
+
+/* ===== WRITING QUILL ===== */
+.quill{
+  position:absolute;
+  left:0;
+  top:0;
+  font-size:1.4rem;
+  opacity:0;
+  pointer-events:none;
+  filter:drop-shadow(0 0 6px gold);
+  transform:translate(0,0) rotate(-10deg);
+  transition:transform .05s linear, opacity .3s ease;
+}
+
+.hogwarts-envelope.open .quill{
+  opacity:1;
+}
+
+
+@keyframes quillFloat{
+  50%{
+    transform:translate(var(--qx), calc(var(--qy) - 6px)) rotate(-12deg);
+  }
+}
+
+
 </style>
 </head>
 
@@ -344,25 +448,36 @@ h1{
 
 </div>
 
-<button class="home-btn" id="backHome">← Back to Home</button>
 <button class="next-letter-btn" id="nextLetter">Next Letter →</button>
 
 <!-- Envelope 1 -->
 <div id="env1" class="hogwarts-envelope">
   <div class="seal red">H</div>
-  <div class="letter"><p id="text1"></p></div>
+  <div class="letter"><p id="text1">
+    <div class="quill">🪶</div>
+  </p></div>
 </div>
 
 <!-- Envelope 2 -->
 <div id="env2" class="hogwarts-envelope">
   <div class="seal blue">H</div>
-  <div class="letter"><p id="text2"></p></div>
+  <div class="letter"><p id="text2">
+    <div class="quill">🪶</div>
+  </p></div>
 </div>
 
 <!-- Envelope 3 -->
 <div id="env3" class="hogwarts-envelope">
   <div class="seal green">H</div>
-  <div class="letter"><p id="text3"></p></div>
+  <div class="letter"><p id="text3">
+    <div class="quill">🪶</div>
+  </p></div>
+</div>
+<!-- Small ALWAYS button -->
+<button id="alwaysBtn">✨</button>
+<!-- FULL SCREEN ALWAYS -->
+<div id="alwaysOverlay">
+  <div id="alwaysText">ALWAYS!!!</div>
 </div>
 
 </main>
@@ -373,19 +488,53 @@ const texts = [text1, text2, text3];
 const backgrounds = [bg1, bg2, bg3];
 
 const messages=[
-  "Maaaaaammmm!!! En kodbeku gottaglilla. Wanted to thank you differently for everything till today. COSMOBIT article inda gottaytu nimge Harry Potter ista anta so one small try to make you smile. Illu maatadtidini anta baikobedi....😁",
-  "Whole 2k22 batch ge gottu (and even Chatgpt knows now) CSE dept alli nan favourite yaru anta. From SCR to GT, TOC, GenAI, and finally to Infosys: 'ONE PERSON + CONSTANT SUPPORT'✨. You will get new batch of students every new year (which may make you forget me) par... Agar kabhi meri yaad chupchaap aa jaaye, toh use apki ek chhoti si muskaan ke saath jaane dena 🌸. No more blah blah.... One last click!!!" ,
-  "Your support have been my wand and my shield 🪄🛡️.        Your encouragement is the Reparo on my confidence, Protego on my fears, and Lumos on every dark path I walked. Remember me the way Hogwarts remembers its magic......❤️💚"
+  "Maaaaaammmm!!! \n En kodbeku gottaglilla. Wanted to thank you differently for everything till today. \n COSMOBIT article inda gottaytu nimge Harry Potter ista anta so one small try to make you smile. Illu maatadtidini anta baikobedi....😁",
+  "Whole 2k22 batch ge gottu (and even Chatgpt knows now) CSE dept alli nan favourite yaru anta. \n From SCR to GT, TOC, GenAI, and finally to Infosys: 'ONE PERSON + CONSTANT SUPPORT'✨. \n You will get new batch of students every new year (which may make you forget me) par...\n\n Agar kabhi meri yaad chupchaap aa jaaye, toh use apki ek chhoti si muskaan ke saath jaane dena 🌸.      No more blah blah.... One last click!!!" ,
+  "Your support have been my wand and my shield 🪄🛡️. \n Your encouragement is the Reparo on my confidence, Protego on my fears, and Lumos on every dark path I walked. \n Remember me the way Hogwarts remembers its magic......❤️💚"
 ];
 
 let current=0;
 
-function typeText(el,msg){
-  let i=0;el.innerHTML="";
+function typeText(el, msg){
+  let i = 0;
+  el.innerHTML = "";
+
+  const letterBox = el.closest(".letter");
+  const quill = letterBox.querySelector(".quill");
+  quill.style.opacity = "1";
+
   (function t(){
-    if(i<msg.length){el.innerHTML+=msg[i++];setTimeout(t,35)}
+    if (i < msg.length) {
+
+      if (msg[i] === "\n") {
+        el.appendChild(document.createElement("br"));
+        i++;
+      } else {
+        const span = document.createElement("span");
+        span.textContent = msg[i++];
+        el.appendChild(span);
+
+        // move quill to this character
+        const rect = span.getBoundingClientRect();
+        const parentRect = letterBox.getBoundingClientRect();
+
+        quill.style.transform = `
+          translate(
+            ${rect.left - parentRect.left + rect.width}px,
+            ${rect.top - parentRect.top + rect.height}px
+          )
+          rotate(-12deg)
+        `;
+      }
+
+      setTimeout(t, 35);
+    } else {
+      quill.style.opacity = "0";
+    }
   })();
 }
+
+
 
 envs.forEach((env,i)=>{
   env.onclick=()=>{
@@ -404,7 +553,6 @@ enterCastle.onclick=()=>{
   bgVideo.pause();
   bg1.classList.add("show");
   mainContent.style.display="none";
-  backHome.style.display="block";
   setTimeout(()=>{
     envs[0].style.display="block";
     nextLetter.style.display="block";
@@ -422,7 +570,6 @@ if (backgrounds[current].tagName === "VIDEO") {
   backgrounds[current].pause();
   backgrounds[current].currentTime = 0;
 }
-
 
   current++;
 
@@ -450,25 +597,6 @@ if (backgrounds[current].tagName === "VIDEO") {
   }
 };
 ;
-
-
-backHome.onclick = () => {
-  envs.forEach(e => {
-    e.style.display = "none";
-    e.classList.remove("open");
-  });
-
-  backgrounds.forEach(bg => bg.classList.remove("show"));
-
-  bgVideo.style.opacity = 1;
-  bgVideo.play();
-
-  mainContent.style.display = "block";
-  backHome.style.display = "none";
-  nextLetter.style.display = "none";
-  current = 0;
-};
-
 
 const bgMusic=new Audio("hp-theme.mp3");
 bgMusic.loop=true;bgMusic.volume=.85;
@@ -517,9 +645,34 @@ setTimeout(() => {
   enterBtn.classList.add("show-below");
 }, totalTime);
 
+/* ===== SHOW ALWAYS BUTTON AFTER LAST LETTER ===== */
+envs[2].addEventListener("click", () => {
+  setTimeout(() => {
+    document.getElementById("alwaysBtn").classList.add("show");
+  }, 2500);
+});
+
+/* ===== ALWAYS FULL SCREEN ACTION ===== */
+const alwaysBtn = document.getElementById("alwaysBtn");
+const alwaysOverlay = document.getElementById("alwaysOverlay");
+
+alwaysBtn.addEventListener("click", () => {
+  alwaysOverlay.classList.add("show");
+});
+/* ===== MOUSE RESPONSIVE GLOW ===== */
+const alwaysText = document.getElementById("alwaysText");
+
+document.addEventListener("mousemove", (e) => {
+  if (!alwaysOverlay.classList.contains("show")) return;
+
+  const x = (e.clientX / window.innerWidth - 0.5) * 60;
+  const y = (e.clientY / window.innerHeight - 0.5) * 60;
+
+  alwaysText.style.setProperty("--gx", `${x}px`);
+  alwaysText.style.setProperty("--gy", `${y}px`);
+});
 
 </script>
 
 </body>
 </html>
-
